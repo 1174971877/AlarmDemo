@@ -55,6 +55,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:onClick="sendFileMail"
-        android:text="点击发送带附件邮件" />
+        android:text="点击发送带附件邮件"
+        android:visibility="invisible"/>
 
 </LinearLayout>
