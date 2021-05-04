@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case 10:
                 if (grantResults.length < 1) {
                     Toast.makeText(this, "you are not allowed to send a message or make a call!", Toast.LENGTH_LONG).show();
+                    return;
                 }
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     sendMessage();
