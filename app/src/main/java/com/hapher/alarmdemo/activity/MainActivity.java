@@ -89,10 +89,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sms.sendTextMessage(phoneNumber, null, "alarm", pendingIntent, null);
     }
 
-    public void sendMail() {
-
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (permissions.length < 1) {
