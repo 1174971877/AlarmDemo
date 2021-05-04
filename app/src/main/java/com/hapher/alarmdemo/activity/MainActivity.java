@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void sendMessage() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1);
             return;
         }
