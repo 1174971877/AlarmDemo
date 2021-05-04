@@ -80,7 +80,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void sendMessage() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS, Manifest.permission.CALL_PHONE}, 1);
+            //安卓8.0模拟器会闪退，授权之后需要重新手动开启打电话的权限才会正常，因此此处申请两个权限
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS, Manifest.permission.CALL_PHONE}, 10);
             return;
         }
         SmsManager sms = SmsManager.getDefault();
@@ -96,31 +97,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (permissions.length < 1) {
-            return;
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    callPhone();
+                } else {
+                    Toast.makeText(this, "you are not allowed to make a call!", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case 10:
+                if (grantResults.length < 1) {
+                    Toast.makeText(this, "you are not allowed to send a message or make a call!", Toast.LENGTH_LONG).show();
+                }
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    sendMessage();
+                } else {
+                    Toast.makeText(this, "you are not allowed to send a message or make a call!", Toast.LENGTH_LONG).show();
+                }
+                break;
+            default:
+                break;
         }
-        if (permissions[0].equals(Manifest.permission.SEND_SMS)) {
-            switch (requestCode) {
-                case 1:
-                    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        sendMessage();
-                    } else {
-                        Toast.makeText(this, "you are not allowed to send a message!", Toast.LENGTH_LONG).show();
-                    }
-            }
-        } else {
-            switch (requestCode) {
-                case 1:
-                    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        callPhone();
-                    } else {
-                        Toast.makeText(this, "you are not allowed to make a call!", Toast.LENGTH_LONG).show();
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
+
     }
 
     public class SentBroadcastReceiver extends BroadcastReceiver {
