@@ -80,13 +80,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void sendMessage() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS, Manifest.permission.CALL_PHONE}, 1);
             return;
         }
         SmsManager sms = SmsManager.getDefault();
         Intent intent = new Intent(SMS_ACTION);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        sms.sendTextMessage(phoneNumber, null, "alarm", pendingIntent, null);
+        try {
+            sms.sendTextMessage(phoneNumber, null, "alarm", pendingIntent, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        sms.sendTextMessage(phoneNumber, null, "alarm", pendingIntent, null);
     }
 
     @Override
@@ -94,10 +99,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (permissions.length < 1) {
             return;
         }
-        if (permissions[0] == Manifest.permission.SEND_SMS) {
+        if (permissions[0].equals(Manifest.permission.SEND_SMS)) {
             switch (requestCode) {
                 case 1:
-                    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         sendMessage();
                     } else {
                         Toast.makeText(this, "you are not allowed to send a message!", Toast.LENGTH_LONG).show();
@@ -106,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             switch (requestCode) {
                 case 1:
-                    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         callPhone();
                     } else {
                         Toast.makeText(this, "you are not allowed to make a call!", Toast.LENGTH_LONG).show();
